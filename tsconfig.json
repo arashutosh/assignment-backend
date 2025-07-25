@@ -3,8 +3,10 @@
     /* Language and Environment */
     "target": "es2020",
     "lib": [
-      "es2020"
+      "es2020",
+      "dom"
     ],
+    "types": ["node"],
     /* Modules */
     "module": "commonjs",
     "moduleResolution": "node",

@@ -1,10 +1,8 @@
-import { Request, Response } from 'express';
-import Assignment from '../models/Assignment';
-import User from '../models/User';
-import { AuthRequest } from '../middleware/authMiddleware';
+const Assignment = require('../models/Assignment');
+const User = require('../models/User');
 
 // Helper: Calculate available capacity for an engineer
-const getAvailableCapacity = async (engineerId: string) => {
+const getAvailableCapacity = async (engineerId) => {
     const engineer = await User.findById(engineerId);
     if (!engineer) return 0;
     const activeAssignments = await Assignment.find({
@@ -15,7 +13,7 @@ const getAvailableCapacity = async (engineerId: string) => {
     return (engineer.capacity || 0) - totalAllocated;
 };
 
-export const getAssignments = async (req: AuthRequest, res: Response): Promise<void> => {
+const getAssignments = async (req, res) => {
     try {
         const currentUser = req.user;
         if (!currentUser) {
@@ -40,7 +38,7 @@ export const getAssignments = async (req: AuthRequest, res: Response): Promise<v
     }
 };
 
-export const createAssignment = async (req: Request, res: Response): Promise<void> => {
+const createAssignment = async (req, res) => {
     try {
         const { engineerId, allocationPercentage } = req.body;
         const available = await getAvailableCapacity(engineerId);
@@ -55,7 +53,7 @@ export const createAssignment = async (req: Request, res: Response): Promise<voi
     }
 };
 
-export const updateAssignment = async (req: Request, res: Response): Promise<void> => {
+const updateAssignment = async (req, res) => {
     try {
         const { engineerId, allocationPercentage } = req.body;
         const available = await getAvailableCapacity(engineerId);
@@ -77,7 +75,7 @@ export const updateAssignment = async (req: Request, res: Response): Promise<voi
     }
 };
 
-export const deleteAssignment = async (req: Request, res: Response): Promise<void> => {
+const deleteAssignment = async (req, res) => {
     try {
         const assignment = await Assignment.findByIdAndDelete(req.params.id);
         if (!assignment) {
@@ -88,4 +86,11 @@ export const deleteAssignment = async (req: Request, res: Response): Promise<voi
     } catch (error) {
         res.status(500).json({ message: 'Server error' });
     }
+};
+
+module.exports = {
+    getAssignments,
+    createAssignment,
+    updateAssignment,
+    deleteAssignment
 }; 

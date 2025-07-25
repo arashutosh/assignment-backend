@@ -1,10 +1,9 @@
-import { Request, Response } from 'express';
-import Project from '../models/Project';
+const Project = require('../models/Project');
 
-export const getProjects = async (req: Request, res: Response): Promise<void> => {
+const getProjects = async (req, res) => {
     try {
         const { status, skill } = req.query;
-        let filter: any = {};
+        let filter = {};
         if (status) filter.status = status;
         if (skill) filter.requiredSkills = { $in: [skill] };
         const projects = await Project.find(filter);
@@ -14,7 +13,7 @@ export const getProjects = async (req: Request, res: Response): Promise<void> =>
     }
 };
 
-export const getProjectById = async (req: Request, res: Response): Promise<void> => {
+const getProjectById = async (req, res) => {
     try {
         const project = await Project.findById(req.params.id);
         if (!project) {
@@ -27,7 +26,7 @@ export const getProjectById = async (req: Request, res: Response): Promise<void>
     }
 };
 
-export const createProject = async (req: Request, res: Response): Promise<void> => {
+const createProject = async (req, res) => {
     try {
         const project = await Project.create(req.body);
         res.status(201).json(project);
@@ -36,7 +35,7 @@ export const createProject = async (req: Request, res: Response): Promise<void> 
     }
 };
 
-export const updateProject = async (req: Request, res: Response): Promise<void> => {
+const updateProject = async (req, res) => {
     try {
         const project = await Project.findByIdAndUpdate(req.params.id, req.body, { new: true });
         if (!project) {
@@ -47,4 +46,11 @@ export const updateProject = async (req: Request, res: Response): Promise<void> 
     } catch (error) {
         res.status(400).json({ message: 'Invalid data', error });
     }
+};
+
+module.exports = {
+    getProjects,
+    getProjectById,
+    createProject,
+    updateProject
 }; 

@@ -1,6 +1,6 @@
-import express from 'express';
-import { getEngineers, getEngineerCapacity, createEngineer, updateEngineer, deleteEngineer } from '../controllers/engineerController';
-import { protect, requireManager, requireRole } from '../middleware/authMiddleware';
+const express = require('express');
+const { getEngineers, getEngineerCapacity, createEngineer, updateEngineer, deleteEngineer } = require('../controllers/engineerController');
+const { protect, requireManager, requireRole } = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
@@ -19,4 +19,4 @@ router.put('/:id', protect, updateEngineer);
 // DELETE /api/engineers/:id - Manager only
 router.delete('/:id', protect, requireManager, deleteEngineer);
 
-export default router; 
+module.exports = router; 

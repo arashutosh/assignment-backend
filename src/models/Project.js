@@ -1,18 +1,7 @@
-import mongoose, { Schema, Document, Types } from 'mongoose';
+const mongoose = require('mongoose');
+const { Schema } = mongoose;
 
-export interface IProject extends Document {
-    name: string;
-    description: string;
-    startDate: Date;
-    endDate: Date;
-    requiredSkills: string[];
-    requiredTeamSize: number;
-    status: 'planning' | 'active' | 'completed';
-    priority: 'low' | 'medium' | 'high';
-    managerId: Types.ObjectId;
-}
-
-const ProjectSchema: Schema = new Schema({
+const ProjectSchema = new Schema({
     name: { type: String, required: true },
     description: { type: String, required: true },
     startDate: { type: Date, required: true },
@@ -24,4 +13,4 @@ const ProjectSchema: Schema = new Schema({
     managerId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
 });
 
-export default mongoose.model<IProject>('Project', ProjectSchema); 
+module.exports = mongoose.model('Project', ProjectSchema); 

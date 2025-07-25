@@ -1,5 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
+const jwt = require('jsonwebtoken');
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -8,14 +7,7 @@ if (!JWT_SECRET) {
     process.exit(1);
 }
 
-export interface AuthRequest extends Request {
-    user?: {
-        id: string;
-        role: string;
-    };
-}
-
-export const protect = (req: AuthRequest, res: Response, next: NextFunction): void => {
+const protect = (req, res, next) => {
     let token;
     if (
         req.headers.authorization &&
@@ -28,7 +20,7 @@ export const protect = (req: AuthRequest, res: Response, next: NextFunction): vo
         return;
     }
     try {
-        const decoded = jwt.verify(token, JWT_SECRET) as { id: string; role: string };
+        const decoded = jwt.verify(token, JWT_SECRET);
         req.user = decoded;
         next();
     } catch (error) {
@@ -37,8 +29,8 @@ export const protect = (req: AuthRequest, res: Response, next: NextFunction): vo
 };
 
 // Role-based authorization middleware
-export const requireRole = (allowedRoles: string[]) => {
-    return (req: AuthRequest, res: Response, next: NextFunction): void => {
+const requireRole = (allowedRoles) => {
+    return (req, res, next) => {
         if (!req.user) {
             res.status(401).json({ message: 'Not authorized, no user info' });
             return;
@@ -56,7 +48,14 @@ export const requireRole = (allowedRoles: string[]) => {
 };
 
 // Convenience middleware for manager-only routes
-export const requireManager = requireRole(['manager']);
+const requireManager = requireRole(['manager']);
 
 // Convenience middleware for engineer-only routes  
-export const requireEngineer = requireRole(['engineer']); 
+const requireEngineer = requireRole(['engineer']);
+
+module.exports = {
+    protect,
+    requireRole,
+    requireManager,
+    requireEngineer
+}; 

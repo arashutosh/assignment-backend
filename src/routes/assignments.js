@@ -1,11 +1,11 @@
-import express from 'express';
-import {
+const express = require('express');
+const {
     getAssignments,
     createAssignment,
     updateAssignment,
     deleteAssignment,
-} from '../controllers/assignmentController';
-import { protect, requireManager, requireRole } from '../middleware/authMiddleware';
+} = require('../controllers/assignmentController');
+const { protect, requireManager, requireRole } = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
@@ -21,4 +21,4 @@ router.put('/:id', protect, requireManager, updateAssignment);
 // DELETE /api/assignments/:id - Manager only
 router.delete('/:id', protect, requireManager, deleteAssignment);
 
-export default router; 
+module.exports = router; 

@@ -1,6 +1,6 @@
-import express from 'express';
-import { login, profile, loginManager, loginEngineer } from '../controllers/authController';
-import { protect } from '../middleware/authMiddleware';
+const express = require('express');
+const { login, profile, loginManager, loginEngineer } = require('../controllers/authController');
+const { protect } = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
@@ -16,4 +16,4 @@ router.post('/login/manager', loginManager);
 // POST /api/auth/login/engineer
 router.post('/login/engineer', loginEngineer);
 
-export default router; 
+module.exports = router; 

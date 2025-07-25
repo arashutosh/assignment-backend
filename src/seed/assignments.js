@@ -1,8 +1,8 @@
-import mongoose from 'mongoose';
-import dotenv from 'dotenv';
-import Assignment from '../models/Assignment';
-import User from '../models/User';
-import Project from '../models/Project';
+const mongoose = require('mongoose');
+const dotenv = require('dotenv');
+const Assignment = require('../models/Assignment');
+const User = require('../models/User');
+const Project = require('../models/Project');
 
 dotenv.config();
 

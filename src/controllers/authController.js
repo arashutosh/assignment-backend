@@ -1,7 +1,6 @@
-import { Request, Response } from 'express';
-import User from '../models/User';
-import jwt from 'jsonwebtoken';
-import bcrypt from 'bcryptjs';
+const User = require('../models/User');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -10,14 +9,7 @@ if (!JWT_SECRET) {
     process.exit(1);
 }
 
-interface AuthenticatedRequest extends Request {
-    user?: {
-        id: string;
-        role: string;
-    };
-}
-
-export const login = async (req: Request, res: Response): Promise<void> => {
+const login = async (req, res) => {
     const { email, password } = req.body;
     try {
         const user = await User.findOne({ email });
@@ -37,7 +29,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     }
 };
 
-export const loginManager = async (req: Request, res: Response): Promise<void> => {
+const loginManager = async (req, res) => {
     const { email, password } = req.body;
     try {
         const user = await User.findOne({ email });
@@ -57,7 +49,7 @@ export const loginManager = async (req: Request, res: Response): Promise<void> =
     }
 };
 
-export const loginEngineer = async (req: Request, res: Response): Promise<void> => {
+const loginEngineer = async (req, res) => {
     const { email, password } = req.body;
     try {
         const user = await User.findOne({ email });
@@ -77,7 +69,7 @@ export const loginEngineer = async (req: Request, res: Response): Promise<void> 
     }
 };
 
-export const profile = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+const profile = async (req, res) => {
     try {
         if (!req.user) {
             res.status(401).json({ message: 'User not authenticated' });
@@ -98,4 +90,11 @@ export const profile = async (req: AuthenticatedRequest, res: Response): Promise
     } catch (error) {
         res.status(500).json({ message: 'Server error' });
     }
+};
+
+module.exports = {
+    login,
+    loginManager,
+    loginEngineer,
+    profile
 }; 

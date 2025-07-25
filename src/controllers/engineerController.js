@@ -1,12 +1,10 @@
-import { Request, Response } from 'express';
-import User from '../models/User';
-import Assignment from '../models/Assignment';
-import { AuthRequest } from '../middleware/authMiddleware';
+const User = require('../models/User');
+const Assignment = require('../models/Assignment');
 
-export const getEngineers = async (req: Request, res: Response): Promise<void> => {
+const getEngineers = async (req, res) => {
     try {
         const { skill } = req.query;
-        let filter: any = { role: 'engineer' };
+        let filter = { role: 'engineer' };
         if (skill) filter.skills = { $in: [skill] };
         const engineers = await User.find(filter).select('-password');
 
@@ -30,7 +28,7 @@ export const getEngineers = async (req: Request, res: Response): Promise<void> =
     }
 };
 
-export const getEngineerCapacity = async (req: Request, res: Response): Promise<void> => {
+const getEngineerCapacity = async (req, res) => {
     try {
         const engineer = await User.findById(req.params.id);
         if (!engineer || engineer.role !== 'engineer') {
@@ -46,7 +44,7 @@ export const getEngineerCapacity = async (req: Request, res: Response): Promise<
     }
 };
 
-export const createEngineer = async (req: Request, res: Response): Promise<void> => {
+const createEngineer = async (req, res) => {
     try {
         const engineer = await User.create({ ...req.body, role: 'engineer' });
         res.status(201).json(engineer);
@@ -55,7 +53,7 @@ export const createEngineer = async (req: Request, res: Response): Promise<void>
     }
 };
 
-export const updateEngineer = async (req: AuthRequest, res: Response): Promise<void> => {
+const updateEngineer = async (req, res) => {
     try {
         const targetEngineerId = req.params.id;
         const currentUser = req.user;
@@ -85,7 +83,7 @@ export const updateEngineer = async (req: AuthRequest, res: Response): Promise<v
         const managerAllowedFields = ['name', 'email', 'skills', 'seniorityLevel', 'employmentType', 'capacity', 'department'];
         const engineerAllowedFields = ['name', 'email', 'skills', 'seniorityLevel', 'department'];
         
-        const updateData: any = {};
+        const updateData = {};
         const allowedFields = isManager ? managerAllowedFields : engineerAllowedFields;
         
         // Filter request body to only include allowed fields
@@ -107,7 +105,7 @@ export const updateEngineer = async (req: AuthRequest, res: Response): Promise<v
     }
 };
 
-export const deleteEngineer = async (req: Request, res: Response): Promise<void> => {
+const deleteEngineer = async (req, res) => {
     try {
         const engineer = await User.findByIdAndDelete(req.params.id);
         if (!engineer) {
@@ -118,4 +116,12 @@ export const deleteEngineer = async (req: Request, res: Response): Promise<void>
     } catch (error) {
         res.status(500).json({ message: 'Server error' });
     }
+};
+
+module.exports = {
+    getEngineers,
+    getEngineerCapacity,
+    createEngineer,
+    updateEngineer,
+    deleteEngineer
 }; 

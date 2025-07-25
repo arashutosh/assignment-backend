@@ -1,17 +1,17 @@
-import dotenv from 'dotenv';
+const dotenv = require('dotenv');
 
 // Load environment variables
 dotenv.config();
 
-import express from 'express';
-import cors from 'cors';
-import connectDB from './config/db';
-import authRoutes from './routes/auth';
-import projectRoutes from './routes/projects';
-import assignmentRoutes from './routes/assignments';
-import engineerRoutes from './routes/engineers';
-import managerRoutes from './routes/manager';
-import analyticsRoutes from './routes/analytics';
+const express = require('express');
+const cors = require('cors');
+const connectDB = require('./config/db');
+const authRoutes = require('./routes/auth');
+const projectRoutes = require('./routes/projects');
+const assignmentRoutes = require('./routes/assignments');
+const engineerRoutes = require('./routes/engineers');
+const managerRoutes = require('./routes/manager');
+const analyticsRoutes = require('./routes/analytics');
 
 
 // Connect to MongoDB

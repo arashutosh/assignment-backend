@@ -1,10 +1,9 @@
-import { Request, Response } from 'express';
-import User from '../models/User';
-import Assignment from '../models/Assignment';
-import Project from '../models/Project';
+const User = require('../models/User');
+const Assignment = require('../models/Assignment');
+const Project = require('../models/Project');
 
 // Team utilization: average allocation across all engineers
-export const teamUtilization = async (_req: Request, res: Response) => {
+const teamUtilization = async (_req, res) => {
     try {
         const engineers = await User.find({ role: 'engineer' });
         const utilization = await Promise.all(engineers.map(async (eng) => {
@@ -20,7 +19,7 @@ export const teamUtilization = async (_req: Request, res: Response) => {
 };
 
 // Skill gap analysis: for each project, list missing skills in the team
-export const skillGapAnalysis = async (_req: Request, res: Response) => {
+const skillGapAnalysis = async (_req, res) => {
     try {
         const projects = await Project.find();
         const engineers = await User.find({ role: 'engineer' });
@@ -39,7 +38,7 @@ export const skillGapAnalysis = async (_req: Request, res: Response) => {
 };
 
 // Assignment timeline: for each engineer, list assignments with start/end dates
-export const assignmentTimeline = async (_req: Request, res: Response) => {
+const assignmentTimeline = async (_req, res) => {
     try {
         const engineers = await User.find({ role: 'engineer' });
         const timeline = await Promise.all(engineers.map(async (eng) => {
@@ -49,7 +48,7 @@ export const assignmentTimeline = async (_req: Request, res: Response) => {
             return {
                 engineer: eng.name,
                 assignments: assignments.map(a => ({
-                    project: (a.projectId as any)['name'],
+                    project: a.projectId.name,
                     startDate: a.startDate,
                     endDate: a.endDate,
                     allocation: a.allocationPercentage,
@@ -61,4 +60,10 @@ export const assignmentTimeline = async (_req: Request, res: Response) => {
     } catch (error) {
         res.status(500).json({ message: 'Server error' });
     }
+};
+
+module.exports = {
+    teamUtilization,
+    skillGapAnalysis,
+    assignmentTimeline
 }; 

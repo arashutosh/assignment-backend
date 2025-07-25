@@ -1,8 +1,7 @@
-import { Request, Response } from 'express';
-import User from '../models/User';
-import Assignment from '../models/Assignment';
+const User = require('../models/User');
+const Assignment = require('../models/Assignment');
 
-export const teamOverview = async (_req: Request, res: Response): Promise<void> => {
+const teamOverview = async (_req, res) => {
     try {
         const engineers = await User.find({ role: 'engineer' }).select('-password');
         const overview = await Promise.all(engineers.map(async (eng) => {
@@ -24,4 +23,8 @@ export const teamOverview = async (_req: Request, res: Response): Promise<void> 
     } catch (error) {
         res.status(500).json({ message: 'Server error' });
     }
+};
+
+module.exports = {
+    teamOverview
 }; 

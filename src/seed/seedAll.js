@@ -1,9 +1,9 @@
-import mongoose from 'mongoose';
-import dotenv from 'dotenv';
-import bcrypt from 'bcryptjs';
-import User from '../models/User';
-import Project from '../models/Project';
-import Assignment from '../models/Assignment';
+const mongoose = require('mongoose');
+const dotenv = require('dotenv');
+const bcrypt = require('bcryptjs');
+const User = require('../models/User');
+const Project = require('../models/Project');
+const Assignment = require('../models/Assignment');
 
 dotenv.config();
 
@@ -67,7 +67,7 @@ const users = [
     },
 ];
 
-const createProjects = async (managerId: string) => {
+const createProjects = async (managerId) => {
     return [
         {
             name: 'E-Commerce Platform Redesign',
@@ -232,7 +232,7 @@ const seedAll = async () => {
         const manager = await User.findOne({ role: 'manager' });
         if (!manager) throw new Error('No manager found');
 
-        const projectData = await createProjects((manager._id as any).toString());
+        const projectData = await createProjects(manager._id.toString());
         await Project.insertMany(projectData);
         console.log('✅ Projects seeded successfully');
 

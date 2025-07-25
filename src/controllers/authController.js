@@ -2,12 +2,13 @@ const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
-const JWT_SECRET = process.env.JWT_SECRET;
-
-if (!JWT_SECRET) {
-    console.error('JWT_SECRET environment variable is required');
-    process.exit(1);
-}
+const getJWTSecret = () => {
+    const JWT_SECRET = process.env.JWT_SECRET;
+    if (!JWT_SECRET) {
+        throw new Error('JWT_SECRET environment variable is required');
+    }
+    return JWT_SECRET;
+};
 
 const login = async (req, res) => {
     const { email, password } = req.body;
@@ -22,7 +23,7 @@ const login = async (req, res) => {
             res.status(401).json({ message: 'Invalid credentials' });
             return;
         }
-        const token = jwt.sign({ id: user._id, role: user.role }, JWT_SECRET, { expiresIn: '1d' });
+        const token = jwt.sign({ id: user._id, role: user.role }, getJWTSecret(), { expiresIn: '1d' });
         res.json({ token, user: { id: user._id, name: user.name, email: user.email, role: user.role } });
     } catch (error) {
         res.status(500).json({ message: 'Server error' });
@@ -42,7 +43,7 @@ const loginManager = async (req, res) => {
             res.status(401).json({ message: 'Invalid credentials' });
             return;
         }
-        const token = jwt.sign({ id: user._id, role: user.role }, JWT_SECRET, { expiresIn: '1d' });
+        const token = jwt.sign({ id: user._id, role: user.role }, getJWTSecret(), { expiresIn: '1d' });
         res.json({ token, user: { id: user._id, name: user.name, email: user.email, role: user.role } });
     } catch (error) {
         res.status(500).json({ message: 'Server error' });
@@ -62,7 +63,7 @@ const loginEngineer = async (req, res) => {
             res.status(401).json({ message: 'Invalid credentials' });
             return;
         }
-        const token = jwt.sign({ id: user._id, role: user.role }, JWT_SECRET, { expiresIn: '1d' });
+        const token = jwt.sign({ id: user._id, role: user.role }, getJWTSecret(), { expiresIn: '1d' });
         res.json({ token, user: { id: user._id, name: user.name, email: user.email, role: user.role } });
     } catch (error) {
         res.status(500).json({ message: 'Server error' });

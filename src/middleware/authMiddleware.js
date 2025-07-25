@@ -1,11 +1,12 @@
 const jwt = require('jsonwebtoken');
 
-const JWT_SECRET = process.env.JWT_SECRET;
-
-if (!JWT_SECRET) {
-    console.error('JWT_SECRET environment variable is required');
-    process.exit(1);
-}
+const getJWTSecret = () => {
+    const JWT_SECRET = process.env.JWT_SECRET;
+    if (!JWT_SECRET) {
+        throw new Error('JWT_SECRET environment variable is required');
+    }
+    return JWT_SECRET;
+};
 
 const protect = (req, res, next) => {
     let token;
@@ -20,7 +21,7 @@ const protect = (req, res, next) => {
         return;
     }
     try {
-        const decoded = jwt.verify(token, JWT_SECRET);
+        const decoded = jwt.verify(token, getJWTSecret());
         req.user = decoded;
         next();
     } catch (error) {

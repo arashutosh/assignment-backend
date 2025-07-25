@@ -1,12 +1,20 @@
 {
   "compilerOptions": {
     /* Language and Environment */
-    "target": "es2016",
+    "target": "es2020",
+    "lib": [
+      "es2020"
+    ],
     /* Modules */
     "module": "commonjs",
+    "moduleResolution": "node",
     "rootDir": "./src",
     "outDir": "./dist",
     "resolveJsonModule": true,
+    /* Type Checking */
+    "types": [
+      "node"
+    ],
     /* JavaScript Support */
     "allowJs": true,
     /* Emit */
@@ -15,11 +23,13 @@
     "removeComments": true,
     /* Interop Constraints */
     "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
     /* Type Checking */
     "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    "noImplicitAny": false,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     /* Completeness */

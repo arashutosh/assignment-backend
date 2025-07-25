@@ -346,3 +346,5 @@ db.assignments.aggregate([...])
 ---
 
 *This backend serves as the foundation for a scalable engineering resource management system, providing secure, performant APIs for frontend consumption.* 
+# Backend converted to JavaScript for deployment
+This backend has been converted from TypeScript to JavaScript to resolve deployment issues.

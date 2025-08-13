@@ -1,0 +1,266 @@
+Invalid data format received
+{
+    "status": "success",
+    "timestamp": "2025-08-13 20:26:19",
+    "data": {
+        "firstName": "ASHISH",
+        "lastName": "Ranjan",
+        "email": "Ashsi@gmail.com",
+        "password": "Ashig@123",
+        "age": 23,
+        "address": "asda",
+        "phoneNumber": "7879797979",
+        "gender": "male",
+        "dob": "2001-09-08",
+        "nationality": "Indian",
+        "id": 3,
+        "created_at": "2025-08-13T10:36:58.383000",
+        "updated_at": "2025-08-13T10:36:58.383000"
+    }
+}
+
+import { useState, useEffect } from "react";
+import { useNavigate, useParams } from 'react-router-dom';
+import { userApi } from "../api/userApi";
+import './FormPage.css';
+
+function EditPage() {
+    const navigate = useNavigate();
+    const { id } = useParams();
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [formData, setFormData] = useState({
+        firstName: '',
+        lastName: '',
+        email: '',
+        password: '',
+        age: '',
+        address: '',
+        phoneNumber: '',
+        gender: '',
+        dob: '',
+        nationality: ''
+    });
+
+    const [phoneError, setPhoneError] = useState('');
+    const [passwordError, setPasswordError] = useState('');
+
+    useEffect(() => {
+        const fetchUser = async () => {
+            try {
+                setLoading(true);
+                const response = await userApi.getUserById(id);
+                if (response?.status === "success" && response.data?.data) {
+                    const userData = response.data.data;
+                    setFormData({
+                        ...userData,
+                        age: userData.age.toString(),
+                        dob: new Date(userData.dob).toISOString().split('T')[0]
+                    });
+                } else {
+                    throw new Error("Invalid data format received");
+                }
+            } catch (error) {
+                console.error("Error fetching user:", error);
+                setError(error.message || "Failed to fetch user data");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        if (id) {
+            fetchUser();
+        }
+    }, [id]);
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+
+        if (name === 'phoneNumber') {
+            const phoneRegex = /^[6-9]\d{9}$/;
+            setPhoneError(phoneRegex.test(value) ? '' : 'Enter a valid 10-digit Indian mobile number');
+        }
+
+        if (name === 'password') {
+            const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+            setPasswordError(passwordRegex.test(value)
+                ? ''
+                : 'Password must be at least 8 characters, include uppercase, lowercase, number, and special character');
+        }
+
+        setFormData(prev => ({ ...prev, [name]: value }));
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        if (phoneError || passwordError) return;
+
+        try {
+            const response = await userApi.updateUser(id, {
+                ...formData,
+                age: parseInt(formData.age)
+            });
+
+            if (response?.status === "success") {
+                navigate('/details');
+            } else {
+                throw new Error("Failed to update user");
+            }
+        } catch (error) {
+            console.error("Error updating user:", error);
+            setError(error.message || "Failed to update user");
+        }
+    };
+
+    if (loading) return <div className="loading">Loading...</div>;
+    if (error) return <div className="error">{error}</div>;
+
+    return (
+        <div className="form-container">
+            <h2>Edit User Details</h2>
+            <form onSubmit={handleSubmit} className="form-box">
+                <div className="form-row">
+                    <label>
+                        First Name:
+                        <input
+                            name="firstName"
+                            type="text"
+                            value={formData.firstName}
+                            onChange={handleChange}
+                            required
+                        />
+                    </label>
+
+                    <label>
+                        Last Name:
+                        <input
+                            name="lastName"
+                            type="text"
+                            value={formData.lastName}
+                            onChange={handleChange}
+                            required
+                        />
+                    </label>
+                </div>
+
+                <label>
+                    Email:
+                    <input
+                        name="email"
+                        type="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        required
+                    />
+                </label>
+
+                <label>
+                    Password:
+                    <input
+                        name="password"
+                        type="password"
+                        value={formData.password}
+                        onChange={handleChange}
+                        required
+                    />
+                    {passwordError && <span className="error">{passwordError}</span>}
+                </label>
+
+                <div className="form-row">
+                    <label>
+                        Age:
+                        <input
+                            name="age"
+                            type="number"
+                            value={formData.age}
+                            onChange={handleChange}
+                            required
+                        />
+                    </label>
+
+                    <label>
+                        Gender:
+                        <select
+                            name="gender"
+                            value={formData.gender}
+                            onChange={handleChange}
+                            required
+                        >
+                            <option value="">Select</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </label>
+                </div>
+
+                <label>
+                    Date of Birth:
+                    <input
+                        name="dob"
+                        type="date"
+                        value={formData.dob}
+                        onChange={handleChange}
+                        required
+                    />
+                </label>
+
+                <label>
+                    Address:
+                    <input
+                        name="address"
+                        type="text"
+                        value={formData.address}
+                        onChange={handleChange}
+                        required
+                    />
+                </label>
+
+                <label>
+                    Phone Number:
+                    <input
+                        name="phoneNumber"
+                        type="tel"
+                        value={formData.phoneNumber}
+                        onChange={handleChange}
+                        required
+                    />
+                    {phoneError && <span className="error">{phoneError}</span>}
+                </label>
+
+                <div className="form-row nationality-row">
+                    <span className="radio-label">Nationality:</span>
+                    <div className="radio-options">
+                        <label>
+                            <input
+                                type="radio"
+                                name="nationality"
+                                value="Indian"
+                                checked={formData.nationality === "Indian"}
+                                onChange={handleChange}
+                                required
+                            />
+                            <span>Indian</span>
+                        </label>
+
+                        <label>
+                            <input
+                                type="radio"
+                                name="nationality"
+                                value="Non-Indian"
+                                checked={formData.nationality === "Non-Indian"}
+                                onChange={handleChange}
+                            />
+                            <span>Other</span>
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit">Save Changes</button>
+                {error && <div className="error">{error}</div>}
+            </form>
+        </div>
+    );
+}
+
+export default EditPage;
